@@ -7,13 +7,13 @@ library(shinyHeatmaply)
 library(plotly)
 library(readr)
 
-# Define UI for application that draws a histogram
+# Define UI for application that draws a plot
 ui <- fluidPage(
 
-    # Application title
+    # App title
     titlePanel("GDP / capita ?"),
 
-    # Sidebar with a slider input for number of bins 
+    # Sidebar with an input 
     sidebarLayout(
         sidebarPanel(
             selectInput("states",
@@ -61,34 +61,12 @@ server <- function(input, output) {
     gdp_pop <- (gdp_prep[2:NCOL(gdp_prep)]/pop_prep[2:NCOL(pop_prep)])*1000000
     gdp_pop_2 <- as.data.frame(as.matrix(t(gdp_pop)))
     colnames(gdp_pop_2) <- gdp_prep[[1]]
-    # gdp_pop_prep <- cbind(gdp_prep[,1], gdp_pop)
     
+      
     output$distPlot <- renderPlotly({  # renderPlot({
         
-        
-        # x <- gdp_pop_prep  # faithful[, 2]
-        # 
-        # x_picked <- x[, input$states]
-        
-        # # draw the histogram with the specified number of bins
-        # hist(x, breaks = bins, col = 'darkgray', border = 'white')
-        
         heatmaply(as.matrix(gdp_pop_2))
-        
-        # data(mtcars)
-        # launch_heatmaply(mtcars)
-        
-        # d3heatmap(schemas4, # [1:30,],
-        #           Rowv = F, Colv = F,
-        #           color = brewer.pal (3, "Blues" ) # heat.colors(3)
-        # )
-        
-        # p <- ggplot(x_picked, aes(x = 'Year', y = 'State')) +
-        #   #  geom_line(y = input$states)
-        #      geom_tile()  + # stat = "identity")  # y = ?)
-        #     scale_x_time(name = "Year")
-        # 
-        # ggplotly(p)
+
     })
 }
 
