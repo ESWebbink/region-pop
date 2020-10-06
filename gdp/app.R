@@ -2,11 +2,10 @@
 # 2020-Oct-05
 
 library(shiny)
-# library(d3heatmap)
 library(heatmaply)
+library(shinyHeatmaply)
 library(plotly)
 library(readr)
-
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -18,7 +17,7 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             selectInput("states",
-                        "State:",
+                        "State (this part...doesn't quite work):",
                         choices = state.name,
                         selected = NULL,
                         multiple = TRUE)
@@ -26,9 +25,9 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           # plotOutput("distPlot")
             
-            # plotlyOutput("distPlot")
+           plotlyOutput("distPlot")
         )
     )
 )
@@ -60,6 +59,9 @@ server <- function(input, output) {
         # hist(x, breaks = bins, col = 'darkgray', border = 'white')
         
         heatmaply(as.matrix(gdp_pop_2))
+        
+        # data(mtcars)
+        # launch_heatmaply(mtcars)
         
         # d3heatmap(schemas4, # [1:30,],
         #           Rowv = F, Colv = F,
