@@ -2,51 +2,79 @@
 # 2020-Oct-05
 
 library(shiny)
+# library(d3heatmap)
+library(heatmaply)
 library(plotly)
 library(readr)
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("GDP / capita ?"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            selectInput("states",
+                        "State:",
+                        choices = state.name,
+                        selected = NULL,
+                        multiple = TRUE)
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
-           # plotOutput("distPlot")
+           plotOutput("distPlot")
             
-            plotlyOutput("distPlot")
+            # plotlyOutput("distPlot")
         )
     )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
+    
+    gdp <- read_csv(url("https://raw.githubusercontent.com/magpiedin/region-pop/main/data/SAGDP1__ALL_AREAS_1997_2019.csv"))
+    gdp_states <- gdp[gdp$GeoName %in% state.name & grepl("Current-dollar", gdp$Description),]
+    gdp_prep <- gdp_states[,c("GeoName", 2010:2019)]
+    
+    pop <- read_csv(url("https://raw.githubusercontent.com/magpiedin/region-pop/main/data/state-census-2010-2019.csv"))
+    pop_states <- pop[pop$GeographicArea %in% state.name,]
+    pop_prep <- pop_states[,c("GeographicArea", 2010:2019)]
+    
+    gdp_pop <- (gdp_prep[2:NCOL(gdp_prep)]/pop_prep[2:NCOL(pop_prep)])*1000000
+    gdp_pop_2 <- as.data.frame(as.matrix(t(gdp_pop)))
+    colnames(gdp_pop_2) <- gdp_prep[[1]]
+    # gdp_pop_prep <- cbind(gdp_prep[,1], gdp_pop)
+    
     output$distPlot <- renderPlotly({  # renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
+        
+        
+        # x <- gdp_pop_prep  # faithful[, 2]
+        # 
+        # x_picked <- x[, input$states]
+        
         # # draw the histogram with the specified number of bins
         # hist(x, breaks = bins, col = 'darkgray', border = 'white')
         
-        p <- ggplot(faithful, aes(waiting)) +
-            geom_histogram(bins = input$bins + 1)
+        heatmaply(as.matrix(gdp_pop_2))
         
-        ggplotly(p)
+        # d3heatmap(schemas4, # [1:30,],
+        #           Rowv = F, Colv = F,
+        #           color = brewer.pal (3, "Blues" ) # heat.colors(3)
+        # )
+        
+        # p <- ggplot(x_picked, aes(x = 'Year', y = 'State')) +
+        #   #  geom_line(y = input$states)
+        #      geom_tile()  + # stat = "identity")  # y = ?)
+        #     scale_x_time(name = "Year")
+        # 
+        # ggplotly(p)
     })
 }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
