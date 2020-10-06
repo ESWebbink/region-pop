@@ -20,14 +20,29 @@ ui <- fluidPage(
                         "State (this part...doesn't quite work):",
                         choices = state.name,
                         selected = NULL,
-                        multiple = TRUE)
-        ),
+                        multiple = TRUE),
+        
+            tags$p(),
+            tags$h3("Data"),
+            tags$p("- U.S. state populations from ",
+                   tags$a(href = "https://www.census.gov/data/tables/time-series/demo/popest/2010s-state-total.html",
+                          "census.gov")),
+            tags$p("- U.S. state GDP from ",
+                   tags$a(href = "https://apps.bea.gov/regional/downloadzip.cfm",
+                          "bea.gov")),
+            tags$br(),
+            tags$p(tags$a(href = "https://github.com/magpiedin/region-pop",
+                          "code for this 'gdp-pop' app is here"))
+            ),
 
         # Show a plot of the generated distribution
         mainPanel(
-           # plotOutput("distPlot")
             
-           plotlyOutput("distPlot")
+            tags$h2("Heatmap"),
+            tags$p("GDP (in current dollars) per capita per state"),
+            tags$p(tags$em("takes a moment to load")),
+            tags$br(),
+            plotlyOutput("distPlot")
         )
     )
 )
