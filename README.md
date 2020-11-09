@@ -1,5 +1,5 @@
 # region-pop
-messing with regional gdp & population stats 
+messing with a copy of regional gdp & population stats 
 
 ## Heatmap:
 - GDP (current dollars) per capita for U.S. states from 2010 - 2019
